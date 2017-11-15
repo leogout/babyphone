@@ -1,5 +1,4 @@
 module.exports = function(app, db) {
-
   app.get('/babyphones', (req, res) => {
     db.collection('babyphone').find().toArray()
       .then(result => {
