@@ -1,13 +1,11 @@
-const express     = require('express')
-const bodyParser  = require('body-parser')
-const app         = express()
-const dbConf      = require('./config/db')
-const routes      = require('./routes')
-const mongoose    = require('mongoose')
+const express    = require('express')
+const mongoose   = require('mongoose')
 mongoose.Promise = Promise
-const passport    = require('passport')
-
-const morgan      = require('morgan')
+const bodyParser = require('body-parser')
+const dbConf     = require('./config/db')
+const routes     = require('./routes')
+const jwt        = require('./middlewares/jwt-middleware')
+const app        = express()
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*")
@@ -15,9 +13,8 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use(passport.initialize())
-
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(jwt)
 
 const port = 8000
 

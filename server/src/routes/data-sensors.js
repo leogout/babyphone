@@ -1,13 +1,9 @@
-const passport = require('passport')
-require('../config/auth').configurePassport(passport)
-const getToken = require('../config/auth').getToken
 const DataSensor = require('../models/DataSensor')
 
 module.exports = function(app) {
-  app.get('/data-sensors', passport.authenticate('jwt', { session: false }), function(req, res) {
-    const token = getToken(req.headers)
+  app.get('/data-sensors', function(req, res) {
 
-    if (!token) {
+    if (!req.user) {
       return res.status(403).send({success: false, msg: 'Unauthorized.'})
     }
 
@@ -19,12 +15,11 @@ module.exports = function(app) {
       })
   })
 
-  app.post('/data-sensors', passport.authenticate('jwt', { session: false }), function(req, res) {
-    const token = getToken(req.headers)
-
-    if (!token) {
+  app.post('/data-sensors', function(req, res) {
+    if (!req.user) {
       return res.status(403).send({success: false, msg: 'Unauthorized.'})
     }
+
 
     const newDataSensor = new DataSensor({
       savedAt: req.body.savedAt,
