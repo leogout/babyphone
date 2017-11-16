@@ -44,7 +44,7 @@ module.exports = function(app) {
           // if user is found and password is right create a token
           const token = jwt.sign({email: user.email}, config.secret)
           // return the information including token as JSON
-          res.json({success: true, token: token})
+          res.json({success: true, token: token, user: user})
         } else {
           res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'})
         }
