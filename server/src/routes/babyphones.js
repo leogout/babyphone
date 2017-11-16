@@ -1,11 +1,10 @@
-module.exports = function(app, db) {
+module.exports = function(app) {
   app.get('/babyphones', (req, res) => {
     db.collection('babyphone').find().toArray()
       .then(result => {
         res.send(result.ops[0])
       })
       .catch(err => {
-        console.log(err)
         res.send({error: 'An error occured while requesting babyphones.'})
       })
   })

@@ -1,6 +1,6 @@
 const passport = require('passport')
 const config = require('../config/db')
-require('../config/auth')(passport)
+require('../config/auth').configurePassport(passport)
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 const Babyphone = require('../models/Babyphone')
