@@ -1,15 +1,8 @@
 FROM node:latest
-
-RUN mkdir -p /usr/src/app
-
-WORKDIR /usr/src/app
-
-COPY package.json /usr/src/app/
-
+ENV APP=/usr/src/app/
+RUN mkdir -p $APP
+COPY package.json $APP
+WORKDIR $APP
 RUN npm install
-
-COPY . /usr/src/app
-
 EXPOSE 8000
-
 CMD [ "npm", "start" ]
