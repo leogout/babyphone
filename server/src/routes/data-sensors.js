@@ -8,9 +8,9 @@ module.exports = function(app) {
     }
 
     DataSensor.find({babyphone: req.user.babyphone})
-      .then((dataSensors) => {
+      .then(dataSensors => {
         res.json({success: true, msg: '', items: dataSensors})
-      }).catch((err) => {
+      }).catch(err => {
         res.json({success: false, msg: 'Get datasensors failed.'})
       })
   })
@@ -20,7 +20,6 @@ module.exports = function(app) {
       return res.status(403).send({success: false, msg: 'Unauthorized.'})
     }
 
-
     const newDataSensor = new DataSensor({
       savedAt: req.body.savedAt,
       temperature: req.body.temperature,
@@ -29,10 +28,10 @@ module.exports = function(app) {
       babyphone: req.user.babyphone
     })
 
-    newDataSensor.save().then((dataSensor) => {
-      res.json({success: true, msg: 'Successful created new datasensor.'})
-    }).catch((err) => {
-      res.json({success: false, msg: 'Save datasensor failed.'})
+    newDataSensor.save().then(dataSensor => {
+      res.json({success: true, msg: 'Successfully created new datasensor.'})
+    }).catch(err => {
+      res.json({success: false, msg: 'Datasensor creation failed.'})
     })
 
   })

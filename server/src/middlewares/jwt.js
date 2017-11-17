@@ -3,7 +3,7 @@ const User = require('../models/User')
 const jsonwebtoken = require('jsonwebtoken')
 const jwtConf = require('../config/jwt')
 
-module.exports = (req, res, next) => {
+function jwt(req, res, next) {
   const authorization = _.get(req, 'headers.authorization')
 
   if (!authorization)
@@ -26,3 +26,5 @@ module.exports = (req, res, next) => {
     })
   })
 }
+
+module.exports = jwt

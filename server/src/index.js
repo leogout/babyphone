@@ -1,29 +1,25 @@
-const express    = require('express')
-const mongoose   = require('mongoose')
+const express = require('express')
+const mongoose = require('mongoose')
 mongoose.Promise = Promise
-const bodyParser = require('body-parser')
-const dbConf     = require('./config/db')
-const routes     = require('./routes')
-const jwt        = require('./middlewares/jwt-middleware')
-const app        = express()
+const urlencodedParser = require('body-parser').urlencoded({ extended: true })
+const dbConf = require('./config/db')
+const registerRoutes = require('./routes')
+const jwt = require('./middlewares/jwt')
+const cors = require('./middlewares/cors')
+const app = express()
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-  next()
-})
-
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(urlencodedParser)
+app.use(cors)
 app.use(jwt)
 
 const port = 8000
 
-mongoose.connect(dbConf.url, { useMongoClient: true }).then((db) => {
-  routes(app)
+mongoose.connect(dbConf.url, { useMongoClient: true }).then(() => {
+  registerRoutes(app)
 
   app.listen(port, () => {
-    console.log('We are live on ' + port)
+    console.log('Babyphone server runs on port ' + port)
   })
-}, (err) => {
+}, err => {
   console.log(err)
 })
