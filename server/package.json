@@ -1,11 +1,13 @@
 {
   "name": "babyphone-server",
   "version": "0.0.1",
-  "description": "",
+  "description": "The server side of our M1 project.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon app.js",
+    "test": "mocha --exit test/index.js"
   },
+  "repository": "git@github.com:leogout/babyphone.git",
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -19,6 +21,9 @@
     "morgan": "^1.9.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "nodemon": "^1.12.1",
+    "supertest": "^3.0.0"
   }
 }
