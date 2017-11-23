@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Babyphone = require('./Babyphone')
 const Schema = mongoose.Schema
 
 const DataSensorSchema = new Schema({
@@ -20,8 +19,9 @@ const DataSensorSchema = new Schema({
     required: true
   },
   babyphone: {
-    type: Babyphone.Types.ObjectId,
-    required: true
+    type: Schema.ObjectId,
+    required: true,
+    ref: 'Babyphone'
   }
 })
 

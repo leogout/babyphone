@@ -1,7 +1,7 @@
-const babyphoneRoutes = require('./babyphone')
+const dataSensorsRoutes = require('./data-sensors')
 const userRoutes = require('./user')
 
 module.exports = function(app) {
-  babyphoneRoutes(app)
+  dataSensorsRoutes(app)
   userRoutes(app)
 }
