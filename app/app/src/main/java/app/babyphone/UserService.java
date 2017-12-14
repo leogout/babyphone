@@ -1,4 +1,4 @@
-package com.example.gaetan.babyphoneapp;
+package app.babyphone;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
