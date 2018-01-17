@@ -10,7 +10,7 @@ const BabyphoneSchema = new Schema({
   url: {
     type: String,
     required: false,
-    unique: true
+    unique: false
   },
 })
 

@@ -5,22 +5,15 @@ module.exports = function(app) {
   app.post('/babyphone', (req, res) => {
     const { url, serial } = req.body
 
-    const newBabyphone = new Babyphone({
-      serial: serial,
-      url: url
-    })
+    console.log('url:', url, 'serial:', serial)
 
-    newBabyphone.save().then(babyphone => {
-      res.json(200, rbody.success(null, { babyphone }))
-    }).catch(err => {
-      res.json(409, rbody.error('An error occured.'))
-    })
-
-    /*Babyphone
-      .findOneAndUpdate({ serial: serial }, { url: url })
+    Babyphone.findOneAndUpdate({ serial: serial }, { serial: serial, url: url }, { upsert: true })
       .then(babyphone => {
-
         res.json(200, rbody.success(null, { babyphone }))
-      })*/
+      })
+      .catch(err => {
+        console.log(err)
+        res.json(500, rbody.error('An error occured.'))
+      })
   })
 }
