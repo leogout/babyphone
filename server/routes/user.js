@@ -22,7 +22,7 @@ module.exports = function(app) {
         newUser.save().then(user => {
           const token = jwt.sign({ email: user.email }, jwtConf.secret)
 
-          res.json(200, rbody.success('Created new user.', { token }))
+          res.json(200, rbody.success('Created new user.', { token, video_url: babyphone.url }))
         }).catch(err => {
           res.json(409, rbody.error('The user email or the babyphone\'s serial are already used by another account.'))
         })
@@ -37,14 +37,14 @@ module.exports = function(app) {
       email: req.body.email
     }).then(user => {
       if (!user)
-        return res.send(400, rbody.error('User with this email not found.'))
+        return res.send(400, rbody.error('Email not found.'))
 
       if (!user.comparePassword(req.body.password))
         return res.send(400, rbody.error('Wrong password.'))
 
       const token = jwt.sign({ email: user.email }, jwtConf.secret)
 
-      res.json(200, rbody.success('User signed in.', { token }))
+      res.json(200, rbody.success('User signed in.', { token, video_url: user.babyphone.url }))
     }).catch(err => {
       res.send(422, rbody.error('An error occured on our side, please retry later.'))
     })
