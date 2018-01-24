@@ -36,8 +36,8 @@ module.exports = function(app) {
     User.findOne({
       email: req.body.email
     })
-      .populate('babyphone')
-      .then(user => {
+    .populate('babyphone')
+    .then(user => {
       if (!user)
         return res.send(400, rbody.error('Email not found.'))
 
