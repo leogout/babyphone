@@ -34,7 +34,9 @@ echo "Gathering ngrok generated url"
 
 URL=$(curl http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url')
 
-echo "Saving babyphone tunnel to $URL"
+echo "Sending to server"
+echo " - url: $URL"
+echo " - uniqid: $ID"
 
 curl -X POST \
   http://$SERVER_URL/babyphone \
@@ -43,6 +45,9 @@ curl -X POST \
   -H "postman-token: 82f18ff1-fd24-910a-b7a8-93d85ef4fb55" \
   -d "url=$URL&serial=$ID"
 
+
+echo "Starting streaming..."
+
 mkdir /tmp/stream
-raspistill --nopreview -w 640 -h 480 -q 5 -o /tmp/stream/pic.jpg -tl 500 -t 0
-mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w ./www"
+raspistill --nopreview -w 640 -h 480 -q 5 -o /tmp/stream/pic.jpg -tl 500 -t 0 &
+mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w ./www" &
