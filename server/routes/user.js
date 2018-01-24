@@ -35,7 +35,9 @@ module.exports = function(app) {
   app.post('/signin', (req, res) => {
     User.findOne({
       email: req.body.email
-    }).then(user => {
+    })
+      .populate('babyphone')
+      .then(user => {
       if (!user)
         return res.send(400, rbody.error('Email not found.'))
 

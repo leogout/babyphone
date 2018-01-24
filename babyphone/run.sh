@@ -38,12 +38,14 @@ echo "Sending to server"
 echo " - url: $URL"
 echo " - uniqid: $ID"
 
-curl -X POST \
+response=$(curl --write-out %{http_code} --silent --output /dev/null \
+  -X POST \
   http://$SERVER_URL/babyphone \
   -H "cache-control: no-cache" \
   -H "content-type: application/x-www-form-urlencoded" \
   -H "postman-token: 82f18ff1-fd24-910a-b7a8-93d85ef4fb55" \
   -d "url=$URL&serial=$ID"
+)
 
 
 echo "Starting streaming..."
