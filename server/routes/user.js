@@ -13,6 +13,10 @@ module.exports = function(app) {
 
     Babyphone.findOne({ serial: serial })
       .then(babyphone => {
+
+        if (!babyphone)
+          res.json(409, rbody.error('Can\'t find associated babyphone.'))
+
         const newUser = new User({
           email: email,
           password: password,
@@ -24,11 +28,11 @@ module.exports = function(app) {
 
           res.json(200, rbody.success('Created new user.', { token, video_url: babyphone.url }))
         }).catch(err => {
-          res.json(409, rbody.error('The user email or the babyphone\'s serial are already used by another account.'))
+          res.json(409, rbody.error('The user email is already used by another account.'))
         })
       })
       .catch(err => {
-        res.json(409, rbody.error('Can\'t find associated babyphone.'))
+        res.json(409, rbody.error('Error while finding babyphone.'))
       })
   })
 
