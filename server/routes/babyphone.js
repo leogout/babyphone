@@ -12,8 +12,7 @@ module.exports = function(app) {
         res.json(200, rbody.success(null, { babyphone }))
       })
       .catch(err => {
-        console.log(err)
-        res.json(500, rbody.error('An error occured.'))
+        res.json(500, rbody.error('An error occured while creating a babyphone.'))
       })
   })
 }
