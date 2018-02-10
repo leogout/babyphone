@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # General
-# SERVER_URL='54.37.11.19'
-SERVER_URL='127.0.0.1:8000'
+SERVER_URL='54.37.11.19'
+# SERVER_URL='127.0.0.1:8000'
 LD_LIBRARY_PATH=/usr/local/lib
 
 echo "Looking for the uniq ID of the babyphone"
@@ -43,7 +43,6 @@ response=$(curl --write-out %{http_code} --silent --output /dev/null \
   http://$SERVER_URL/babyphone \
   -H "cache-control: no-cache" \
   -H "content-type: application/x-www-form-urlencoded" \
-  -H "postman-token: 82f18ff1-fd24-910a-b7a8-93d85ef4fb55" \
   -d "url=$URL&serial=$ID"
 )
 
@@ -51,5 +50,5 @@ response=$(curl --write-out %{http_code} --silent --output /dev/null \
 echo "Starting streaming..."
 
 mkdir /tmp/stream
-raspistill --nopreview -w 640 -h 480 -q 5 -o /tmp/stream/pic.jpg -tl 500 -t 0 &
+raspistill --nopreview -w 320 -h 240 -q 5 -o /tmp/stream/pic.jpg -tl 500 -t 0 &
 mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w ./www" &

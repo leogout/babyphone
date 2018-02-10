@@ -4,7 +4,7 @@ import wifi
 def Search():
     wifilist = []
 
-    cells = wifi.Cell.all('wlp3s0')
+    cells = wifi.Cell.all('wlan0')
 
     for cell in cells:
         wifilist.append(cell)
@@ -23,7 +23,7 @@ def FindFromSearchList(ssid):
 
 
 def FindFromSavedList(ssid):
-    cell = wifi.Scheme.find('wlp3s0', ssid)
+    cell = wifi.Scheme.find('wlan0', ssid)
 
     if cell:
         return cell
@@ -69,7 +69,7 @@ def Connect(ssid, password=None):
                     return False
 
                 return cell
-
+    
     return False
 
 
@@ -77,7 +77,7 @@ def Add(cell, password=None):
     if not cell:
         return False
 
-    scheme = wifi.Scheme.for_cell('wlp3s0', cell.ssid, cell, password)
+    scheme = wifi.Scheme.for_cell('wlan0', cell.ssid, cell, password)
     scheme.save()
     return scheme
 
