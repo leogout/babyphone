@@ -11,7 +11,6 @@ class BlinkLed(Thread):
 
     def setup(self):
         GPIO.setup(self.pin, GPIO.OUT)   # Set LedPin's mode is output
-        GPIO.output(self.pin, GPIO.HIGH) # Set LedPin high(+3.3V) to turn on led
 
     def blink(self):
         self.start()

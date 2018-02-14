@@ -6,17 +6,22 @@ import RPi.GPIO as GPIO
 import logging
 import sys
 
-def to_string(bytes):
-    return bytes.decode('utf-8').strip('\n')
+def format_command(bytes):
+    return bytes.decode('utf-8').strip('\n').split(' ')
 
 # INIT
 GPIO.setmode(GPIO.BCM)
 
 logger = logging.getLogger('babyphone')
-handler = logging.FileHandler('./babyphone.bt.log')
+console_handler = logging.StreamHandler()
+file_handler = logging.FileHandler('./babyphone.bt.log')
+
 formatter = logging.Formatter('%(asctime)s %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+console_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
+
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
 
 # Uncomment to prevent any message under WARNING severity
 # logger.setLevel(logging.WARNING)
@@ -30,6 +35,7 @@ size = 1024
 try:
     logger.info('Creating BT socket...')
     bt_socket = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+    bt_socket.settimeout(5)
     logger.info('Bluetooth socket created')
 except socket.error as msg:
     logger.error('Failed creating socket: %s' % msg)
@@ -60,38 +66,43 @@ button = Button(15)
 wm = WifiManager()
 
 def main():
-    try:
-        bled.blink()
-        print('Waiting for bluetooth connexion...')
-        client, address = bt_socket.accept()
-        print('Connected !')
-        bled.stop()
-        led.up()
+    bled.blink()
+    print('Waiting for bluetooth connexion...')
+    client, address = bt_socket.accept()
+    print('Connected !')
+    bled.stop()
+    led.up()
 
+    print('Waiting for user input...')
+    stop = False
+    while not stop:
+        command = format_command(client.recv(size))
+        print(command)
+
+        if command[0] == 'ls':
+            cells = wm.search()
+            wifi_string = '\n'.join([cell.ssid for cell in cells if cells.ssid]).encode()
+            client.send(wifi_string)
+
+        if command[0] == 'c':
+            print('Atempting connexion to ' + command[1] + '...')
+            wm.connect(command[1], command[1])
+            print('Connected to ' + command[1])
+            client.send(command[1].encode() + b'\n')
+            stop = True
+
+try:
+    while True:
         print('Waiting for user input...')
-        while 1:
-            data = to_string(client.recv(size))
-            print(data)
+        button.onClick(main)
 
-            if data == 'ls':
-                results = wm.search()
-                wifi_string = '\n'.join([cell.ssid for cell in results if results.ssid]).encode()
-                client.send(wifi_string)
-            if data.split(' ')[0] == 'c':
-                print('Atempting connexion to ' + data.split(' ')[1] + '...')
-                wm.connect(data.split(' ')[1], '5x10-1M.S-1')
-                print('Connected to ' + data.split(' ')[1])
-                client.send(data.split(' ')[1].encode() + b'\n')
+except Exception as e:
+    print(e)
+    print('Closing socket')
 
-    except Exception as e:
-        print(e)
-        print('Closing socket')
-
-        bled.stop()
-        led.down()
-        client.close()
-        socket.close()
-        GPIO.cleanup()
+    bled.stop()
+    led.down()
+    bt_socket.close()
+    GPIO.cleanup()
 
 
-button.onClick(main)

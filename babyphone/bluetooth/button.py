@@ -10,7 +10,6 @@ class Button:
 		GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 	
 	def onClick(self, callback):
-		print('Waiting for user input...')
 		try:
 			GPIO.wait_for_edge(self.pin, GPIO.FALLING)
 			callback()
