@@ -14,6 +14,8 @@ def format_command(bytes):
 GPIO.setmode(GPIO.BCM)
 
 logger = logging.getLogger('babyphone')
+logger.setLevel(logging.INFO)
+
 console_handler = logging.StreamHandler()
 file_handler = logging.FileHandler('./babyphone.bt.log')
 
