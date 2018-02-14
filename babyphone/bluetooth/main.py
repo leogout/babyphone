@@ -69,17 +69,17 @@ wm = WifiManager()
 def main():
     call('./bt-start.sh')
     bled.blink()
-    print('Waiting for bluetooth connexion...')
+    logger.info('Waiting for bluetooth connexion...')
     client, address = bt_socket.accept()
-    print('Connected !')
+    logger.info('Connected !')
     bled.stop()
     led.up()
 
-    print('Waiting for user input...')
+    logger.info('Waiting for user input...')
     stop = False
     while not stop:
         command = format_command(client.recv(size))
-        print(command)
+        logger.info(command)
 
         if command[0] == 'ls':
             cells = wm.search()
@@ -87,20 +87,20 @@ def main():
             client.send(wifi_string)
 
         if command[0] == 'c':
-            print('Atempting connexion to ' + command[1] + '...')
+            logger.info('Atempting connexion to ' + command[1] + '...')
             wm.connect(command[1], command[1])
-            print('Connected to ' + command[1])
+            logger.info('Connected to ' + command[1])
             client.send(command[1].encode() + b'\n')
             stop = True
 
 try:
     while True:
-        print('Waiting for user input...')
+        logger.info('Waiting for user input...')
         button.onClick(main)
 
 except Exception as e:
-    print(e)
-    print('Closing socket')
+    logger.error(e)
+    logger.error('Closing socket')
 
     bled.stop()
     led.down()
