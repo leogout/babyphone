@@ -5,6 +5,7 @@ from button import Button
 import RPi.GPIO as GPIO
 import logging
 import sys
+from subprocess import call
 
 def format_command(bytes):
     return bytes.decode('utf-8').strip('\n').split(' ')
@@ -66,6 +67,7 @@ button = Button(15)
 wm = WifiManager()
 
 def main():
+    call('./bt-start.sh')
     bled.blink()
     print('Waiting for bluetooth connexion...')
     client, address = bt_socket.accept()
