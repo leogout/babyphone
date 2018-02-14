@@ -19,15 +19,12 @@ logger.setLevel(logging.INFO)
 console_handler = logging.StreamHandler()
 file_handler = logging.FileHandler('./babyphone.bt.log')
 
-formatter = logging.Formatter('%(asctime)s %(message)s')
+formatter = logging.Formatter('%(asctime)s %(message)s', '%m/%d %H:%M')
 console_handler.setFormatter(formatter)
 file_handler.setFormatter(formatter)
 
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
-
-# Uncomment to prevent any message under WARNING severity
-# logger.setLevel(logging.WARNING)
 
 # START
 MAC = 'B8:27:EB:F6:3F:30'
@@ -78,6 +75,7 @@ def main():
     led.up()
 
     logger.info('Waiting for user input...')
+
     stop = False
     while not stop:
         command = format_command(client.recv(size))
@@ -95,18 +93,17 @@ def main():
             client.send(command[1].encode() + b'\n')
             stop = True
 
-try:
-    while True:
-        logger.info('Waiting for user input...')
+
+while True:
+    logger.info('Waiting for user input...')
+    try:
         button.onClick(main)
+    except socket.timeout:
+        logger.info('Socket timed out')
+    except Exception as e:
+        logger.error('An error occured: %s' % e)
 
-except Exception as e:
-    logger.error(e)
-    logger.error('Closing socket')
-
-    bled.stop()
-    led.down()
-    bt_socket.close()
-    GPIO.cleanup()
-
-
+        bled.stop()
+        led.down()
+        bt_socket.close()
+        GPIO.cleanup()
