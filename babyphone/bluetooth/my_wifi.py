@@ -1,92 +1,73 @@
 import wifi
 
 
-def search():
-    wifilist = []
+class WifiManager:
 
-    cells = wifi.Cell.all('wlan0')
+    def __init__(self, card='wlan0'):
+        self.card = card
 
-    for cell in cells:
-        wifilist.append(cell)
+    def search(self):
+        wifilist = []
 
-    return wifilist
+        cells = wifi.Cell.all(self.card)
+
+        for cell in cells:
+            wifilist.append(cell)
+
+        return wifilist
 
 
-def findFromSearchList(ssid):
-    wifilist = search()
+    def findFromSearchList(self, ssid):
+        wifilist = self.search()
 
-    for cell in wifilist:
-        if cell.ssid == ssid:
+        for cell in wifilist:
+            if cell.ssid == ssid:
+                return cell
+
+
+    def findFromSavedList(self, ssid):
+        cell = wifi.Scheme.find(self.card, ssid)
+
+        if cell:
             return cell
 
-    return False
 
+    def connect(self, ssid, password=None):
+        cell = self.findFromSearchList(ssid)
 
-def findFromSavedList(ssid):
-    cell = wifi.Scheme.find('wlan0', ssid)
+        if not cell:
+            return
 
-    if cell:
-        return cell
+        savedcell = self.findFromSavedList(cell.ssid)
 
-    return False
+        # Cell already known
+        if savedcell:
+            savedcell.activate()
+            return cell
 
-
-def connect(ssid, password=None):
-    cell = findFromSearchList(ssid)
-
-    if not cell:
-        return False
-
-    savedcell = findFromSavedList(cell.ssid)
-
-    # Already Saved from Setting
-    if savedcell:
-        savedcell.activate()
-        return cell
-
-    # First time to conenct
-    if cell.encrypted:
-        if not password:
-            return False
-
-        scheme = add(cell, password)
-
-        try:
-            scheme.activate()
-        # Wrong Password
-        except wifi.exceptions.ConnectionError:
-            delete(ssid)
-            return False
-
-        return cell
-
-    else:
-        scheme = add(cell)
+        # Unknown cell, registering
+        scheme = self.add(cell, password)
 
         try:
             scheme.activate()
         except wifi.exceptions.ConnectionError:
-            delete(ssid)
-            return False
+            self.delete(ssid)
+            return
 
         return cell
 
 
+    def add(self, cell, password=None):
+        scheme = wifi.Scheme.for_cell(self.card, cell.ssid, cell, password)
+        scheme.save()
 
-def add(cell, password=None):
-    scheme = wifi.Scheme.for_cell('wlan0', cell.ssid, cell, password)
-    scheme.save()
-
-    return scheme
+        return scheme
 
 
-def delete(ssid):
-    cell = findFromSavedList(ssid)
+    def delete(self, ssid):
+        cell = self.findFromSavedList(ssid)
 
-    if not cell:
-        return False
+        if not cell:
+            return
 
-    cell.delete()
-
-    return True
-
+        cell.delete()

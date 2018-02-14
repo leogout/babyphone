@@ -5,3 +5,4 @@ Refactor blink Led class
 Cleanup main and my_wifi
 Create log files
 Create java app to connect via bluetooth
+Create wifi class

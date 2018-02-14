@@ -1,5 +1,5 @@
 import socket
-import my_wifi
+from my_wifi import WifiManager
 from led import Led, BlinkLed
 from button import Button
 import RPi.GPIO as GPIO
@@ -57,7 +57,7 @@ led = Led(14)
 bled = BlinkLed(16)
 button = Button(15)
 
-led.down()
+wm = WifiManager()
 
 def main():
     try:
@@ -74,25 +74,24 @@ def main():
             print(data)
 
             if data == 'ls':
-                results = my_wifi.Search()
+                results = wm.search()
                 wifi_string = '\n'.join([cell.ssid for cell in results if results.ssid]).encode()
                 client.send(wifi_string)
             if data.split(' ')[0] == 'c':
                 print('Atempting connexion to ' + data.split(' ')[1] + '...')
-                my_wifi.Connect(data.split(' ')[1], '5x10-1M.S-1')
+                wm.connect(data.split(' ')[1], '5x10-1M.S-1')
                 print('Connected to ' + data.split(' ')[1])
                 client.send(data.split(' ')[1].encode() + b'\n')
 
     except Exception as e:
+        print(e)
+        print('Closing socket')
+
         bled.stop()
         led.down()
-
-        print(e)
-        print("Closing socket")
-
         client.close()
         socket.close()
-        GPIO.cleanup() # Release resources
+        GPIO.cleanup()
 
 
 button.onClick(main)
