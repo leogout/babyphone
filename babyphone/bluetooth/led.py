@@ -25,6 +25,7 @@ class BlinkLed(Thread):
 
     def stop(self):
         self.term = True
+        self.join()
 
 class Led(Thread):
 	def __init__(self, pin):
