@@ -86,7 +86,7 @@ def main():
 
         if command[0] == 'ls':
             cells = wm.search()
-            wifi_string = '\n'.join([cell.ssid for cell in cells if cells.ssid]).encode()
+            wifi_string = '\n'.join([cell.ssid for cell in cells if cell.ssid]).encode()
             client.send(wifi_string)
 
         if command[0] == 'c':
@@ -98,18 +98,17 @@ def main():
 
 
 while True:
-    logger.info('Waiting for user input...')
     try:
+        logger.info('Waiting for user input...')
         button.onClick(main)
-
-        bled.stop()
-        led.down()
-        bt_socket.close()
     except socket.timeout:
         logger.info('Socket timed out.')
-
-        bled.stop()
-        led.down()
+    except KeyboardInterrupt:
         bt_socket.close()
+        GPIO.cleanup()
+
+    bled.stop()
+    led.down()
+
 
 
