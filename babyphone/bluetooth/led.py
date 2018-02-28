@@ -19,7 +19,7 @@ class BlinkLed():
     def run(self):
         self.term = False
         while not self.term:
-            GPIO.output(self.pin, GPIO.HIGH)  # led on
+            GPIO.output(self.pin, GPIO.HIGH) # led on
             time.sleep(0.5)
             GPIO.output(self.pin, GPIO.LOW) # led off
             time.sleep(0.5)

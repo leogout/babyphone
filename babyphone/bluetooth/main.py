@@ -67,22 +67,6 @@ bled = BlinkLed(16)
 
 wm = WifiManager()
 
-
-class TextMenu:
-    def __init__(self, reader):
-        self.menu = {}
-        self.reader = reader
-
-    def addEntry(self, key, action):
-        self.menu[key] = action
-
-    def run(self):
-        value = self.reader()
-        while value != 'exit':
-            self.menu[value]()
-            value = self.reader()
-
-
 def main():
     logger.info('Waiting for bluetooth connexion...')
     call('./bt-start.sh')
@@ -122,16 +106,10 @@ while True:
         led.down()
         bt_socket.close()
     except socket.timeout:
-        logger.info('Socket timed out')
+        logger.info('Socket timed out.')
 
         bled.stop()
         led.down()
         bt_socket.close()
-    except Exception as e:
-        logger.error('An error occured: %s' % e)
-        GPIO.cleanup()
 
-        bled.stop()
-        led.down()
-        bt_socket.close()
 
