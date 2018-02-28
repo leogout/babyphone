@@ -13,7 +13,6 @@ def format_command(bytes):
 # INIT
 GPIO.setmode(GPIO.BCM)
 
-
 logger = logging.getLogger('babyphone')
 logger.setLevel(logging.INFO)
 
@@ -26,6 +25,8 @@ file_handler.setFormatter(formatter)
 
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
+# Uncomment to prevent any message under WARNING severity
+logger.setLevel(logging.INFO)
 
 # START
 MAC = 'B8:27:EB:F6:3F:30'
@@ -61,10 +62,26 @@ except socket.error as msg:
     sys.exit(1)
 
 led = Led(14)
-bled = BlinkLed(16)
 button = Button(15)
+bled = BlinkLed(16)
 
 wm = WifiManager()
+
+
+class TextMenu:
+    def __init__(self, reader):
+        self.menu = {}
+        self.reader = reader
+
+    def addEntry(self, key, action):
+        self.menu[key] = action
+
+    def run(self):
+        value = self.reader()
+        while value != 'exit':
+            self.menu[value]()
+            value = self.reader()
+
 
 def main():
     logger.info('Waiting for bluetooth connexion...')
