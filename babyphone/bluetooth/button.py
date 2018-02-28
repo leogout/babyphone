@@ -15,4 +15,3 @@ class Button:
 			callback()
 		except KeyboardInterrupt:
 			GPIO.cleanup()
-		GPIO.cleanup()

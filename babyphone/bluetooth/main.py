@@ -13,11 +13,12 @@ def format_command(bytes):
 # INIT
 GPIO.setmode(GPIO.BCM)
 
+
 logger = logging.getLogger('babyphone')
 logger.setLevel(logging.INFO)
 
 console_handler = logging.StreamHandler()
-file_handler = logging.FileHandler('./babyphone.bt.log')
+file_handler = logging.FileHandler('./babyphone.log')
 
 formatter = logging.Formatter('%(asctime)s %(message)s', '%m/%d %H:%M')
 console_handler.setFormatter(formatter)
@@ -66,6 +67,7 @@ button = Button(15)
 wm = WifiManager()
 
 def main():
+    logger.info('Waiting for bluetooth connexion...')
     call('./bt-start.sh')
     bled.blink()
     logger.info('Waiting for bluetooth connexion...')

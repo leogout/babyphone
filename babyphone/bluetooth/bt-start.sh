@@ -13,6 +13,7 @@ sudo rfkill unblock bluetooth
 echo -e "[ ${GREEN}Ok${NC} ]"
 
 echo "Sarting discoverable mode..."
+
 bluetoothctl << EOF
 power on
 discoverable on
@@ -20,6 +21,7 @@ agent on
 default-agent
 quit
 EOF
+
 echo -e "[ ${GREEN}Ok${NC} ]"
 
-echo "You can now pair your phone to the raspberry :)"
+echo "You can now pair your phone to the raspberry."
