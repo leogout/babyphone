@@ -70,10 +70,9 @@ bled = BlinkLed(16)
 wm = WifiManager()
 
 def main():
-    logger.info('Waiting for bluetooth connexion for %d seconds...' % TIMEOUT)
     call('./bt-start.sh')
     bled.blink()
-    logger.info('Waiting for bluetooth connexion...')
+    logger.info('Waiting for bluetooth connexion for %d seconds...' % TIMEOUT)
     client, address = bt_socket.accept()
     logger.info('Connected !')
     bled.stop()
