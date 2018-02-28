@@ -117,12 +117,21 @@ while True:
     logger.info('Waiting for user input...')
     try:
         button.onClick(main)
-    except socket.timeout:
-        logger.info('Socket timed out')
-    except Exception as e:
-        logger.error('An error occured: %s' % e)
 
         bled.stop()
         led.down()
         bt_socket.close()
+    except socket.timeout:
+        logger.info('Socket timed out')
+
+        bled.stop()
+        led.down()
+        bt_socket.close()
+    except Exception as e:
+        logger.error('An error occured: %s' % e)
         GPIO.cleanup()
+
+        bled.stop()
+        led.down()
+        bt_socket.close()
+
