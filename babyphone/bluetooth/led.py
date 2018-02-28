@@ -2,18 +2,19 @@ import RPi.GPIO as GPIO
 import time
 from threading import Thread
 
-class BlinkLed(Thread):
+class BlinkLed():
     def __init__(self, pin):
-        Thread.__init__(self)
         self.pin = pin
         self.term = False
-        self.setup()
-
-    def setup(self):
+        self.thread = None
         GPIO.setup(self.pin, GPIO.OUT)   # Set LedPin's mode is output
 
     def blink(self):
-        self.start()
+        if self.thread:
+            self.stop()
+
+        self.thread = Thread(target=self.run)
+        self.thread.start()
 
     def run(self):
         self.term = False
@@ -24,19 +25,20 @@ class BlinkLed(Thread):
             time.sleep(0.5)
 
     def stop(self):
+        if not self.thread:
+            return
+
         self.term = True
-        self.join()
+        self.thread.join()
+        self.thread = None
 
 class Led(Thread):
-	def __init__(self, pin):
-		self.pin = pin
-		self.setup()
+    def __init__(self, pin):
+        self.pin = pin
+        GPIO.setup(self.pin, GPIO.OUT)    # Set LedPin's mode is output
 
-	def setup(self):
-		GPIO.setup(self.pin, GPIO.OUT)    # Set LedPin's mode is output
+    def up(self):
+        GPIO.output(self.pin, GPIO.HIGH)  # led on
 
-	def up(self):
-		GPIO.output(self.pin, GPIO.HIGH)  # led on
-	
-	def down(self):
-		GPIO.output(self.pin, GPIO.LOW)   # led off
+    def down(self):
+        GPIO.output(self.pin, GPIO.LOW)   # led off
