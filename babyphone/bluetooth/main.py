@@ -12,6 +12,7 @@ def format_command(bytes):
 
 # INIT
 GPIO.setmode(GPIO.BCM)
+GPIO.setwrnings(False)
 
 logger = logging.getLogger('babyphone')
 logger.setLevel(logging.INFO)
@@ -103,6 +104,8 @@ while True:
         button.onClick(main)
     except socket.timeout:
         logger.info('Socket timed out.')
+    except ConnectionResetError:
+        logger.info('Connexion reset by peer.')
     except KeyboardInterrupt:
         bt_socket.close()
         GPIO.cleanup()
