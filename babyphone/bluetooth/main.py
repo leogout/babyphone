@@ -12,7 +12,7 @@ def format_command(bytes):
 
 # INIT
 GPIO.setmode(GPIO.BCM)
-GPIO.setwrnings(False)
+GPIO.setwarnings(False)
 
 logger = logging.getLogger('babyphone')
 logger.setLevel(logging.INFO)
@@ -30,6 +30,7 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.INFO)
 
 # START
+TIMEOUT = 20
 MAC = 'B8:27:EB:F6:3F:30'
 port = 1
 backlog = 1
@@ -38,7 +39,7 @@ size = 1024
 try:
     logger.info('Creating BT socket...')
     bt_socket = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
-    bt_socket.settimeout(5)
+    bt_socket.settimeout(TIMEOUT)
     logger.info('Bluetooth socket created')
 except socket.error as msg:
     logger.error('Failed creating socket: %s' % msg)
@@ -69,7 +70,7 @@ bled = BlinkLed(16)
 wm = WifiManager()
 
 def main():
-    logger.info('Waiting for bluetooth connexion...')
+    logger.info('Waiting for bluetooth connexion for %d seconds...' % TIMEOUT)
     call('./bt-start.sh')
     bled.blink()
     logger.info('Waiting for bluetooth connexion...')
