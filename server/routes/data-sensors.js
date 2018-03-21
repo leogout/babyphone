@@ -1,24 +1,23 @@
 const DataSensor = require('../models/DataSensor')
+const rbody = require('../services/response-body')
 
 module.exports = function(app) {
   app.get('/data-sensors', function(req, res) {
 
-    if (!req.user) {
-      return res.status(403).send({success: false, msg: 'Unauthorized.'})
-    }
+    if (!req.user)
+      return res.json(401, rbody.error('Unauthorized.'))
 
     DataSensor.find({babyphone: req.user.babyphone})
-      .then(dataSensors => {
-        res.json({success: true, msg: '', items: dataSensors})
+      .then(sensors => {
+        res.json(200, rbody.success(null, { sensors }))
       }).catch(err => {
-        res.json({success: false, msg: 'Get datasensors failed.'})
+        res.json(409, rbody.error('Failed datasensor fetching from database.'))
       })
   })
 
   app.post('/data-sensors', function(req, res) {
-    if (!req.user) {
-      return res.status(403).send({success: false, msg: 'Unauthorized.'})
-    }
+    if (!req.user)
+      return res.send(403, rbody.error('Unauthorized.'))
 
     const newDataSensor = new DataSensor({
       savedAt: req.body.savedAt,
@@ -28,11 +27,10 @@ module.exports = function(app) {
       babyphone: req.user.babyphone
     })
 
-    newDataSensor.save().then(dataSensor => {
-      res.json({success: true, msg: 'Successfully created new datasensor.'})
+    newDataSensor.save().then(sensor => {
+      res.json(200, rbody.success('Successfully created data sensor.', { sensor }))
     }).catch(err => {
-      res.json({success: false, msg: 'Datasensor creation failed.'})
+      res.send(422, rbody.error('An error occured on our side, please retry later.'))
     })
-
   })
 }

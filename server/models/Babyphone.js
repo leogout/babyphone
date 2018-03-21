@@ -6,7 +6,12 @@ const BabyphoneSchema = new Schema({
     type: String,
     required: true,
     unique: true
-  }
+  },
+  url: {
+    type: String,
+    required: false,
+    unique: false
+  },
 })
 
 module.exports = mongoose.model('Babyphone', BabyphoneSchema)
