@@ -1,5 +1,5 @@
 import socket
-from my_wifi import WifiManager
+from wm import WifiManager
 from led import Led, BlinkLed
 from button import Button
 import RPi.GPIO as GPIO
@@ -94,7 +94,7 @@ def main():
             logger.info('Atempting connexion to ' + command[1] + '...')
             wm.connect(command[1], command[1])
             logger.info('Connected to ' + command[1])
-            client.send(command[1].encode() + b'\n')
+            client.send(command[1].encode() + b';')
             stop = True
 
 
