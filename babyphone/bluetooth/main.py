@@ -8,7 +8,7 @@ import sys
 from subprocess import call
 
 def format_command(bytes):
-    return bytes.decode('utf-8').strip('\n').split(' ')
+    return bytes.decode('utf-8').strip('\n').split(';')
 
 # INIT
 GPIO.setmode(GPIO.BCM)
@@ -30,7 +30,7 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.INFO)
 
 # START
-TIMEOUT = 20
+TIMEOUT = 60
 MAC = 'B8:27:EB:F6:3F:30'
 port = 1
 backlog = 1
@@ -92,15 +92,15 @@ def main():
 
         if command[0] == 'c':
             logger.info('Atempting connexion to ' + command[1] + '...')
-            wm.connect(command[1], command[1])
+            wm.connect(command[1], command[2])
             logger.info('Connected to ' + command[1])
-            client.send(command[1].encode() + b';')
+            client.send(command[1].encode() + b'\n')
             stop = True
 
 
 while True:
     try:
-        logger.info('Waiting for user input...')
+        logger.info('Waiting for button to be pressed...')
         button.onClick(main)
     except socket.timeout:
         logger.info('Socket timed out.')
